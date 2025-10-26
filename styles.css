@@ -1,0 +1,61 @@
+/* lato-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./assets/fonts/lato-v25-latin-regular.woff2") format("woff2"),
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+      url("./assets/fonts/lato-v25-latin-regular.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+}
+/* lato-700 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 700;
+  src: url("./assets/fonts/lato-v25-latin-700.woff2") format("woff2"),
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+      url("./assets/fonts/lato-v25-latin-700.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+}
+
+:root {
+  --primary-100: #3f704d; /* deeper sage — stronger contrast against light accents */
+  --primary-200: #6da66f; /* mid sage green, livens up components */
+  --primary-300: #cfffc3; /* very light green for hover or success states */
+  --accent-100: #f8e3b6; /* warm light tan, bright enough for dark backgrounds */
+  --accent-200: #b08a53; /* golden brown — good for emphasis, buttons, borders */
+  --text-100: #ffffff; /* main text on dark background */
+  --text-200: #d6d6d6; /* secondary text */
+  --bg-100: #141717; /* true deep charcoal for high contrast */
+  --bg-200: #222726; /* lighter charcoal for surfaces */
+  --bg-300: #353b39; /* mid tone for cards or inactive UI elements */
+}
+
+html {
+  background: var(--bg-100);
+  color: var(--text-100);
+  font-family: "Lato", sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh; /* fill viewport with height */
+}
+/* prevent root + body for adding more space */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body-container {
+  flex: 1 1 auto; /* grow to fill remaining space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
