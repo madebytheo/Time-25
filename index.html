@@ -7,37 +7,33 @@
     <title>Time-25</title>
   </head>
   <body>
-    <div class="app">
-      <header>
-        <h1>Time-25</h1>
-      </header>
+    <main>
+      <p class="badge badge--default" id="badge">Let's Go!</p>
 
-      <main class="body-container">
-        <section class="app-interface">
-          <span class="badge badge--default">Let's Go!</span>
+      <p class="timer" id="timer"></p>
 
-          <p class="timer">25:00</p>
-
-          <div class="app-buttons">
-            <button class="button button--small" disabled>
-              <ion-icon name="pencil" class="button-icon"></ion-icon>
-            </button>
-            <button class="button">
-              <!-- play button seems to be a bit off center hence the margin -->
-              <ion-icon
-                name="play"
-                class="button-icon"
-                style="margin-left: 3px"
-              ></ion-icon>
-              <!-- <ion-icon name="pause"></ion-icon> -->
-            </button>
-            <button class="button button--small">
-              <ion-icon name="refresh" class="button-icon"></ion-icon>
-            </button>
-          </div>
-        </section>
-      </main>
-    </div>
+      <div class="app-buttons">
+        <button class="button button--small" disabled>
+          <ion-icon name="pencil" class="button-icon"></ion-icon>
+        </button>
+        <button class="button" id="play-pause-button">
+          <!-- play button seems to be a bit off center hence the margin -->
+          <ion-icon
+            name="play"
+            class="button-icon"
+            style="margin-left: 3px"
+            id="play-pause-icon"
+          ></ion-icon>
+        </button>
+        <button class="button button--small">
+          <ion-icon
+            name="refresh"
+            class="button-icon"
+            id="refresh-button"
+          ></ion-icon>
+        </button>
+      </div>
+    </main>
 
     <script
       type="module"
@@ -47,5 +43,6 @@
       nomodule
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
     ></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

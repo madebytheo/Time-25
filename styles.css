@@ -29,29 +29,19 @@ p {
   margin: 0;
 }
 
-.app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100dvh; /* fill viewport with height */
-}
-/* prevent root + body for adding more space */
+/* prevent root + body from adding more space */
 html,
 body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
-.body-container {
-  flex: 1 1 auto; /* grow to fill remaining space */
+main {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-}
-
-.app-interface {
-  text-align: center;
+  min-height: 100dvh;
 }
 
 .badge {
@@ -61,6 +51,7 @@ body {
   letter-spacing: 0.05rem;
   text-transform: uppercase;
   font-size: 0.875rem;
+  display: inline-block;
 }
 .badge--default {
   background: #555;
@@ -87,8 +78,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
-
 .button {
   --size: 4rem; /* default button size */
   background: #1e1f1f;
