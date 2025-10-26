@@ -13,8 +13,39 @@
       </header>
 
       <main class="body-container">
-        <section></section>
+        <section class="app-interface">
+          <span class="badge badge--default">Let's Go!</span>
+
+          <p class="timer">25:00</p>
+
+          <div class="app-buttons">
+            <button class="button button--small" disabled>
+              <ion-icon name="pencil" class="button-icon"></ion-icon>
+            </button>
+            <button class="button">
+              <!-- play button seems to be a bit off center hence the margin -->
+              <ion-icon
+                name="play"
+                class="button-icon"
+                style="margin-left: 3px"
+              ></ion-icon>
+              <!-- <ion-icon name="pause"></ion-icon> -->
+            </button>
+            <button class="button button--small">
+              <ion-icon name="refresh" class="button-icon"></ion-icon>
+            </button>
+          </div>
+        </section>
       </main>
     </div>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
   </body>
 </html>

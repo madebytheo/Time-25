@@ -19,23 +19,14 @@
       url("./assets/fonts/lato-v25-latin-700.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
 }
 
-:root {
-  --primary-100: #3f704d; /* deeper sage — stronger contrast against light accents */
-  --primary-200: #6da66f; /* mid sage green, livens up components */
-  --primary-300: #cfffc3; /* very light green for hover or success states */
-  --accent-100: #f8e3b6; /* warm light tan, bright enough for dark backgrounds */
-  --accent-200: #b08a53; /* golden brown — good for emphasis, buttons, borders */
-  --text-100: #ffffff; /* main text on dark background */
-  --text-200: #d6d6d6; /* secondary text */
-  --bg-100: #141717; /* true deep charcoal for high contrast */
-  --bg-200: #222726; /* lighter charcoal for surfaces */
-  --bg-300: #353b39; /* mid tone for cards or inactive UI elements */
+html {
+  background: #141717;
+  color: #fff;
+  font-family: "Lato", sans-serif;
 }
 
-html {
-  background: var(--bg-100);
-  color: var(--text-100);
-  font-family: "Lato", sans-serif;
+p {
+  margin: 0;
 }
 
 .app {
@@ -51,11 +42,84 @@ body {
   margin: 0;
   padding: 0;
 }
-
 .body-container {
   flex: 1 1 auto; /* grow to fill remaining space */
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+.app-interface {
+  text-align: center;
+}
+
+.badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 99px;
+  font-weight: 700;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+}
+.badge--default {
+  background: #555;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(85, 85, 85, 0.4);
+}
+.badge--work {
+  background: #e63946;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.4);
+}
+.badge--break {
+  background: #06d6a0;
+  color: #141717;
+  box-shadow: 0 0 10px rgba(6, 214, 160, 0.4);
+}
+
+.timer {
+  font-size: 5rem;
+  margin: 2rem 0;
+}
+
+.app-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  --size: 4rem; /* default button size */
+  background: #1e1f1f;
+  border: none;
+  border-radius: 100%;
+  width: var(--size);
+  height: var(--size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  color: #ffffff;
+  font-size: 2rem;
+}
+.button--small {
+  --size: 3rem;
+  font-size: 1.25rem;
+}
+.button:hover:not(:disabled) {
+  background: #2a2c2c;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+.button:active:not(:disabled) {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+.button:disabled {
+  background: #2a2c2c;
+  color: #7a7a7a;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
