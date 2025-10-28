@@ -87,10 +87,10 @@ function updateBadgeState(badgeText, newState) {
 function setPlayPauseIcon(isPlay) {
   if (isPlay) {
     playPauseIcon.setAttribute("name", "play");
-    playPauseIcon.style.marginLeft = "3px"; // TODO: get rid of direct DOM styling manipulation
+    playPauseIcon.classList.add("fix-off-center");
   } else {
     playPauseIcon.setAttribute("name", "pause");
-    playPauseIcon.style.marginLeft = "0"; // TODO: get rid of direct DOM styling manipulation
+    playPauseIcon.classList.remove("fix-off-center");
   }
 }
 

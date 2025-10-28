@@ -114,3 +114,8 @@ main {
   box-shadow: none;
   transform: none;
 }
+
+/* only applied to the play button */
+.fix-off-center {
+  margin-left: 3px;
+}
