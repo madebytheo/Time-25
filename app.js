@@ -1,9 +1,15 @@
+/**
+ * dom elements
+ */
 const timerDisplay = document.getElementById("timer");
 const playPauseButton = document.getElementById("play-pause-button");
 const playPauseIcon = document.getElementById("play-pause-icon");
 const appStateBadge = document.getElementById("badge");
 const refreshButton = document.getElementById("refresh-button");
 
+/**
+ * state
+ */
 const minute = 60; // seconds
 let workSessionLength = 25; // minutes
 let totalSeconds = workSessionLength * minute;
@@ -13,15 +19,14 @@ const alarm = new Audio("./assets/alarms/funny-alarm.mp3");
 let isWorkSession = true;
 let breakSessionLength = 5; // minutes
 
+/**
+ * timer functions
+ */
 function formatTime(seconds) {
   const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
   const ss = String(Math.floor(seconds % 60)).padStart(2, "0");
 
   return `${mm}:${ss}`;
-}
-
-function updateTimerDisplay() {
-  timerDisplay.textContent = formatTime(totalSeconds);
 }
 
 function startTimer() {
@@ -47,13 +52,45 @@ function pauseTimer() {
   interval = null;
 }
 
+function updateTimerDisplay() {
+  timerDisplay.textContent = formatTime(totalSeconds);
+}
+
+function switchSession(startNewWorkSession) {
+  isWorkSession = startNewWorkSession;
+  const sessionLength = isWorkSession ? workSessionLength : breakSessionLength;
+  const badgeText = isWorkSession ? "Work" : "Break";
+  const badgeState = isWorkSession ? "work" : "break";
+  updateBadgeState(badgeText, badgeState);
+  totalSeconds = sessionLength * minute;
+  updateTimerDisplay();
+  isRunning = true;
+  setPlayPauseIcon(false);
+  playPauseButton.removeAttribute("disabled");
+  startTimer();
+}
+
+/**
+ * utility functions
+ */
+
+function updateBadgeState(badgeText, newState) {
+  appStateBadge.classList.remove(
+    "badge--default",
+    "badge--work",
+    "badge--break"
+  );
+  appStateBadge.classList.add(`badge--${newState}`);
+  appStateBadge.textContent = badgeText;
+}
+
 function setPlayPauseIcon(isPlay) {
   if (isPlay) {
     playPauseIcon.setAttribute("name", "play");
-    playPauseIcon.style.marginLeft = "3px";
+    playPauseIcon.style.marginLeft = "3px"; // TODO: get rid of direct DOM styling manipulation
   } else {
     playPauseIcon.setAttribute("name", "pause");
-    playPauseIcon.style.marginLeft = "0";
+    playPauseIcon.style.marginLeft = "0"; // TODO: get rid of direct DOM styling manipulation
   }
 }
 
@@ -67,14 +104,14 @@ function resetApp() {
   updateTimerDisplay();
   setPlayPauseIcon(true);
   playPauseButton.removeAttribute("disabled");
-  appStateBadge.textContent = "Let's Go!";
-  appStateBadge.classList.remove("badge--work", "badge--break");
-  appStateBadge.classList.add("badge--default");
+  updateBadgeState("Let's Go!", "default");
   alarm.pause();
   alarm.currentTime = 0;
 }
 
-// toggle play/pause
+/**
+ * event listeners
+ */
 playPauseButton.addEventListener("click", () => {
   if (!isRunning) {
     startTimer();
@@ -82,13 +119,9 @@ playPauseButton.addEventListener("click", () => {
     isRunning = true;
 
     if (isWorkSession) {
-      appStateBadge.textContent = "Work";
-      appStateBadge.classList.remove("badge--default");
-      appStateBadge.classList.add("badge--work");
+      updateBadgeState("Work", "work");
     } else {
-      appStateBadge.textContent = "Break";
-      appStateBadge.classList.remove("badge--work");
-      appStateBadge.classList.add("badge--break");
+      updateBadgeState("Break", "break");
     }
   } else {
     pauseTimer();
@@ -97,33 +130,13 @@ playPauseButton.addEventListener("click", () => {
   }
 });
 
-// on alarm end switch to other application state + start timer
 alarm.addEventListener("ended", () => {
-  if (isWorkSession) {
-    isWorkSession = false;
-    appStateBadge.textContent = "Break";
-    appStateBadge.classList.remove("badge--work");
-    appStateBadge.classList.add("badge--break");
-    totalSeconds = breakSessionLength * minute;
-    updateTimerDisplay();
-    isRunning = true;
-    setPlayPauseIcon(false);
-    playPauseButton.removeAttribute("disabled");
-    startTimer();
-  } else {
-    isWorkSession = true;
-    appStateBadge.textContent = "Work";
-    appStateBadge.classList.remove("badge--break");
-    appStateBadge.classList.add("badge--work");
-    totalSeconds = workSessionLength * minute;
-    updateTimerDisplay();
-    isRunning = true;
-    setPlayPauseIcon(false);
-    playPauseButton.removeAttribute("disabled");
-    startTimer();
-  }
+  switchSession(!isWorkSession);
 });
 
 refreshButton.addEventListener("click", resetApp);
 
+/**
+ * app start
+ */
 updateTimerDisplay();
