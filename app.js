@@ -5,7 +5,7 @@ const timerDisplay = document.getElementById("timer");
 const playPauseButton = document.getElementById("play-pause-button");
 const playPauseIcon = document.getElementById("play-pause-icon");
 const appStateBadge = document.getElementById("badge");
-const refreshButton = document.getElementById("refresh-button");
+const resetButton = document.getElementById("reset-button");
 
 /**
  * state
@@ -134,7 +134,7 @@ alarm.addEventListener("ended", () => {
   switchSession(!isWorkSession);
 });
 
-refreshButton.addEventListener("click", resetApp);
+resetButton.addEventListener("click", resetApp);
 
 /**
  * app start
