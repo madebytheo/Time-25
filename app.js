@@ -40,9 +40,7 @@ function startTimer() {
       clearInterval(interval);
       interval = null;
       isRunning = false;
-      playPauseButton.setAttribute("disabled", "true");
       alarm.play();
-      setPlayPauseIcon(true);
     }
   }, 1000);
 }
@@ -65,8 +63,7 @@ function switchSession(startNewWorkSession) {
   totalSeconds = sessionLength * minute;
   updateTimerDisplay();
   isRunning = true;
-  setPlayPauseIcon(false);
-  playPauseButton.removeAttribute("disabled");
+  setBtnIconToPlay(false);
   startTimer();
 }
 
@@ -84,7 +81,7 @@ function updateBadgeState(badgeText, newState) {
   appStateBadge.textContent = badgeText;
 }
 
-function setPlayPauseIcon(isPlay) {
+function setBtnIconToPlay(isPlay) {
   if (isPlay) {
     playPauseIcon.setAttribute("name", "play");
     playPauseIcon.classList.add("fix-off-center");
@@ -102,20 +99,31 @@ function resetApp() {
   breakSessionLength = 5; // minutes
   totalSeconds = workSessionLength * minute;
   updateTimerDisplay();
-  setPlayPauseIcon(true);
-  playPauseButton.removeAttribute("disabled");
+  setBtnIconToPlay(true);
   updateBadgeState("Let's Go!", "default");
   alarm.pause();
   alarm.currentTime = 0;
+}
+
+function isAlarmPlaying(audio) {
+  return !audio.paused && !audio.ended && audio.currentTime > 0;
 }
 
 /**
  * event listeners
  */
 playPauseButton.addEventListener("click", () => {
+  // case 1: alarm is currently playing
+  if (isAlarmPlaying(alarm)) {
+    alarm.pause();
+    setBtnIconToPlay(true);
+    return;
+  }
+
+  // case 2: normal timer control
   if (!isRunning) {
     startTimer();
-    setPlayPauseIcon(false);
+    setBtnIconToPlay(false);
     isRunning = true;
 
     if (isWorkSession) {
@@ -125,7 +133,7 @@ playPauseButton.addEventListener("click", () => {
     }
   } else {
     pauseTimer();
-    setPlayPauseIcon(true);
+    setBtnIconToPlay(true);
     isRunning = false;
   }
 });
