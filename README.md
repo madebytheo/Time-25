@@ -2,7 +2,7 @@
 
 ###
 
-<p align="left">A minimalist Pomodoro timer built with HTML, CSS, and vanilla JavaScript. Time-25 helps you stay focused by alternating between work and break sessions.</p>
+<p align="left">A neo-minimal themed <strong>pomodoro timer</strong> built with HTML, CSS, and vanilla JavaScript. Time-25 helps you stay focused by alternating between optimally timed work and break sessions.</p>
 
 ###
 

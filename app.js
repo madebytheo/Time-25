@@ -34,12 +34,14 @@ function startTimer() {
 
   interval = setInterval(() => {
     if (totalSeconds > 0) {
+      timerDisplay.classList.add("running");
       totalSeconds--;
       updateTimerDisplay();
     } else {
       clearInterval(interval);
       interval = null;
       isRunning = false;
+      timerDisplay.classList.remove("running");
       alarm.play();
     }
   }, 1000);
@@ -98,6 +100,7 @@ function resetApp() {
   workSessionLength = 25; // minutes
   breakSessionLength = 5; // minutes
   totalSeconds = workSessionLength * minute;
+  timerDisplay.classList.remove("running");
   updateTimerDisplay();
   setBtnIconToPlay(true);
   updateBadgeState("Let's Go!", "default");
