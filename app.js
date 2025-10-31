@@ -1,153 +1,150 @@
-/**
- * dom elements
- */
-const timerDisplay = document.getElementById("timer");
-const playPauseButton = document.getElementById("play-pause-button");
-const playPauseIcon = document.getElementById("play-pause-icon");
-const appStateBadge = document.getElementById("badge");
-const resetButton = document.getElementById("reset-button");
+class Timer {
+  // private state
+  #second = 1000;
+  #minute = 60;
+  #workLength;
+  #breakLength;
+  #remainingSeconds;
+  #sessionInterval;
+  #running;
+  #isWorkSession;
+  // private dom elements
+  #timerEl;
+  #playPauseBtnEl;
+  #playPauseIconEl;
+  #badgeEl;
+  #resetBtnEl;
+  #alarmAudio;
 
-/**
- * state
- */
-const minute = 60; // seconds
-let workSessionLength = 25; // minutes
-let totalSeconds = workSessionLength * minute;
-let interval = null;
-let isRunning = false;
-const alarm = new Audio("./assets/alarms/funny-alarm.mp3");
-let isWorkSession = true;
-let breakSessionLength = 5; // minutes
+  /**
+   * @param {Object} of options (optional) - config for selectors and session lengths
+   */
+  constructor({
+    timerSelector = "#timer",
+    playPauseBtnSelector = "#play-pause-button",
+    playPauseIconSelector = "#play-pause-button-icon",
+    badgeSelector = "#session-badge",
+    resetBtnSelector = "#reset-button",
+    workSessionLength = 0.25,
+    breakSessionLength = 0.25,
+    alarmSrc = "./assets/alarms/funny-alarm.mp3",
+  } = {}) {
+    // state
+    this.#workLength = workSessionLength;
+    this.#breakLength = breakSessionLength;
+    this.#remainingSeconds = this.#workLength * this.#minute;
+    this.#sessionInterval = null;
+    this.#running = false;
+    this.#isWorkSession = true;
+    // dom elements
+    this.#timerEl = document.querySelector(timerSelector);
+    this.#playPauseBtnEl = document.querySelector(playPauseBtnSelector);
+    this.#playPauseIconEl = document.querySelector(playPauseIconSelector);
+    this.#badgeEl = document.querySelector(badgeSelector);
+    this.#resetBtnEl = document.querySelector(resetBtnSelector);
+    this.#alarmAudio = new Audio(alarmSrc);
+    // ui initialization
+    this.#updateDisplayTime();
+    this.#setPlayPauseIconElVariant("play");
+    this.#updateBadgeElState("Let's Go!", "default");
+    // hook up event listeners
+    this.#bindEvents();
+  }
 
-/**
- * timer functions
- */
-function formatTime(seconds) {
-  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const ss = String(Math.floor(seconds % 60)).padStart(2, "0");
+  start() {
+    if (this.#running) return;
+    this.#running = true;
+    this.#setPlayPauseIconElVariant("pause");
+    this.#badgeEl.classList.add("running");
+    this.#sessionInterval = setInterval(() => this.#tick(), this.#second);
+  }
+  pause() {
+    if (!this.#running) return;
+    clearInterval(this.#sessionInterval);
+    this.#sessionInterval = null;
+    this.#running = false;
+    this.#setPlayPauseIconElVariant("play");
+    this.#timerEl.classList.remove("running");
+  }
+  reset() {
+    this.pause();
+    this.#isWorkSession = true;
+    this.#remainingSeconds = this.#workLength * this.#minute;
+    this.#updateDisplayTime();
+    this.#updateBadgeElState("Let's Go!", "default");
+    this.#alarmAudio.pause();
+    this.#alarmAudio.currentTime = 0;
+  }
+  isRunning() {
+    return this.#running;
+  }
 
-  return `${mm}:${ss}`;
-}
-
-function startTimer() {
-  if (interval) return;
-
-  interval = setInterval(() => {
-    if (totalSeconds > 0) {
-      timerDisplay.classList.add("running");
-      totalSeconds--;
-      updateTimerDisplay();
+  // private methods
+  #tick() {
+    if (this.#remainingSeconds > 0) {
+      this.#remainingSeconds--;
+      this.#updateDisplayTime();
     } else {
-      clearInterval(interval);
-      interval = null;
-      isRunning = false;
-      timerDisplay.classList.remove("running");
-      alarm.play();
+      this.#alarmAudio.play();
     }
-  }, 1000);
-}
-
-function pauseTimer() {
-  clearInterval(interval);
-  interval = null;
-}
-
-function updateTimerDisplay() {
-  timerDisplay.textContent = formatTime(totalSeconds);
-}
-
-function switchSession(startNewWorkSession) {
-  isWorkSession = startNewWorkSession;
-  const sessionLength = isWorkSession ? workSessionLength : breakSessionLength;
-  const badgeText = isWorkSession ? "Work" : "Break";
-  const badgeState = isWorkSession ? "work" : "break";
-  updateBadgeState(badgeText, badgeState);
-  totalSeconds = sessionLength * minute;
-  updateTimerDisplay();
-  isRunning = true;
-  setBtnIconToPlay(false);
-  startTimer();
-}
-
-/**
- * utility functions
- */
-
-function updateBadgeState(badgeText, newState) {
-  appStateBadge.classList.remove(
-    "badge--default",
-    "badge--work",
-    "badge--break"
-  );
-  appStateBadge.classList.add(`badge--${newState}`);
-  appStateBadge.textContent = badgeText;
-}
-
-function setBtnIconToPlay(isPlay) {
-  if (isPlay) {
-    playPauseIcon.setAttribute("name", "play");
-    playPauseIcon.classList.add("fix-off-center");
-  } else {
-    playPauseIcon.setAttribute("name", "pause");
-    playPauseIcon.classList.remove("fix-off-center");
+  }
+  #switchSession() {
+    this.#isWorkSession = !this.#isWorkSession;
+    const length = this.#isWorkSession ? this.#workLength : this.#breakLength;
+    const badgeText = this.#isWorkSession ? "Work" : "Break";
+    const badgeState = this.#isWorkSession ? "work" : "break";
+    this.#remainingSeconds = length * this.#minute;
+    this.#updateBadgeElState(badgeText, badgeState);
+    this.#updateDisplayTime();
+    this.start();
+  }
+  #updateDisplayTime() {
+    const mm = String(Math.floor(this.#remainingSeconds / 60)).padStart(2, "0");
+    const ss = String(this.#remainingSeconds % 60).padStart(2, "0");
+    this.#timerEl.textContent = `${mm}:${ss}`;
+  }
+  #updateBadgeElState(text, state) {
+    this.#badgeEl.classList.remove(
+      "badge--default",
+      "badge--work",
+      "badge--break"
+    );
+    this.#badgeEl.textContent = text;
+    this.#badgeEl.classList.add(`badge--${state}`);
+  }
+  #setPlayPauseIconElVariant(variant) {
+    this.#playPauseIconEl.setAttribute("name", variant);
+    this.#playPauseIconEl.classList.toggle(
+      "fix-off-center",
+      variant === "play"
+    );
+  }
+  #bindEvents() {
+    this.#playPauseBtnEl.addEventListener("click", () => {
+      // play pause functionality for the alarmAudio
+      if (
+        !this.#alarmAudio.paused &&
+        !this.#alarmAudio.ended &&
+        this.#alarmAudio.currentTime > 0
+      ) {
+        this.#alarmAudio.pause();
+      }
+      // play pause functionality for timerEl
+      this.#running ? this.pause() : this.start();
+      if (this.#running) {
+        const badgeText = this.#isWorkSession ? "Work" : "Break";
+        const badgeState = this.#isWorkSession ? "work" : "break";
+        this.#updateBadgeElState(badgeText, badgeState);
+      }
+    });
+    this.#alarmAudio.addEventListener("ended", () => {
+      this.#switchSession();
+    });
+    this.#resetBtnEl.addEventListener("click", () => this.reset());
   }
 }
 
-function resetApp() {
-  pauseTimer();
-  isRunning = false;
-  isWorkSession = true;
-  workSessionLength = 25; // minutes
-  breakSessionLength = 5; // minutes
-  totalSeconds = workSessionLength * minute;
-  timerDisplay.classList.remove("running");
-  updateTimerDisplay();
-  setBtnIconToPlay(true);
-  updateBadgeState("Let's Go!", "default");
-  alarm.pause();
-  alarm.currentTime = 0;
-}
-
-function isAlarmPlaying(audio) {
-  return !audio.paused && !audio.ended && audio.currentTime > 0;
-}
-
-/**
- * event listeners
- */
-playPauseButton.addEventListener("click", () => {
-  // case 1: alarm is currently playing
-  if (isAlarmPlaying(alarm)) {
-    alarm.pause();
-    setBtnIconToPlay(true);
-    return;
-  }
-
-  // case 2: normal timer control
-  if (!isRunning) {
-    startTimer();
-    setBtnIconToPlay(false);
-    isRunning = true;
-
-    if (isWorkSession) {
-      updateBadgeState("Work", "work");
-    } else {
-      updateBadgeState("Break", "break");
-    }
-  } else {
-    pauseTimer();
-    setBtnIconToPlay(true);
-    isRunning = false;
-  }
+// instantiate for plug and play
+document.addEventListener("DOMContentLoaded", () => {
+  new Timer();
 });
-
-alarm.addEventListener("ended", () => {
-  switchSession(!isWorkSession);
-});
-
-resetButton.addEventListener("click", resetApp);
-
-/**
- * app start
- */
-updateTimerDisplay();
