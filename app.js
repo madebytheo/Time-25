@@ -15,6 +15,13 @@ class Timer {
   #badgeEl;
   #resetBtnEl;
   #alarmAudio;
+  #editBtnEl;
+  #modalEl;
+  #modalOverlayEl;
+  #modalCancelBtnEl;
+  #modalSaveBtnEl;
+  #modalWorkInputEl;
+  #modalBreakInputEl;
 
   /**
    * @param {Object} of options (optional) - config for selectors and session lengths
@@ -25,9 +32,16 @@ class Timer {
     playPauseIconSelector = "#play-pause-button-icon",
     badgeSelector = "#session-badge",
     resetBtnSelector = "#reset-button",
-    workSessionLength = 0.25,
-    breakSessionLength = 0.25,
+    workSessionLength = 25,
+    breakSessionLength = 5,
     alarmSrc = "./assets/alarms/funny-alarm.mp3",
+    editBtnSelector = "#edit-button",
+    modalSelector = "#settings-modal",
+    modalOverlaySelector = "#settings-overlay",
+    modalCancelBtnSelector = "#cancel-settings",
+    modalSaveBtnSelector = "#save-settings",
+    modalWorkInputSelector = "#work-length",
+    modalBreakInputSelector = "#break-length",
   } = {}) {
     // state
     this.#workLength = workSessionLength;
@@ -43,6 +57,13 @@ class Timer {
     this.#badgeEl = document.querySelector(badgeSelector);
     this.#resetBtnEl = document.querySelector(resetBtnSelector);
     this.#alarmAudio = new Audio(alarmSrc);
+    this.#editBtnEl = document.querySelector(editBtnSelector);
+    this.#modalEl = document.querySelector(modalSelector);
+    this.#modalOverlayEl = document.querySelector(modalOverlaySelector);
+    this.#modalCancelBtnEl = document.querySelector(modalCancelBtnSelector);
+    this.#modalSaveBtnEl = document.querySelector(modalSaveBtnSelector);
+    this.#modalWorkInputEl = document.querySelector(modalWorkInputSelector);
+    this.#modalBreakInputEl = document.querySelector(modalBreakInputSelector);
     // ui initialization
     this.#updateDisplayTime();
     this.#setPlayPauseIconElVariant("play");
@@ -51,14 +72,14 @@ class Timer {
     this.#bindEvents();
   }
 
-  start() {
+  #start() {
     if (this.#running) return;
     this.#running = true;
     this.#setPlayPauseIconElVariant("pause");
-    this.#badgeEl.classList.add("running");
+    this.#timerEl.classList.add("running");
     this.#sessionInterval = setInterval(() => this.#tick(), this.#second);
   }
-  pause() {
+  #pause() {
     if (!this.#running) return;
     clearInterval(this.#sessionInterval);
     this.#sessionInterval = null;
@@ -66,8 +87,8 @@ class Timer {
     this.#setPlayPauseIconElVariant("play");
     this.#timerEl.classList.remove("running");
   }
-  reset() {
-    this.pause();
+  #reset() {
+    this.#pause();
     this.#isWorkSession = true;
     this.#remainingSeconds = this.#workLength * this.#minute;
     this.#updateDisplayTime();
@@ -75,11 +96,6 @@ class Timer {
     this.#alarmAudio.pause();
     this.#alarmAudio.currentTime = 0;
   }
-  isRunning() {
-    return this.#running;
-  }
-
-  // private methods
   #tick() {
     if (this.#remainingSeconds > 0) {
       this.#remainingSeconds--;
@@ -96,7 +112,7 @@ class Timer {
     this.#remainingSeconds = length * this.#minute;
     this.#updateBadgeElState(badgeText, badgeState);
     this.#updateDisplayTime();
-    this.start();
+    this.#start();
   }
   #updateDisplayTime() {
     const mm = String(Math.floor(this.#remainingSeconds / 60)).padStart(2, "0");
@@ -130,7 +146,7 @@ class Timer {
         this.#alarmAudio.pause();
       }
       // play pause functionality for timerEl
-      this.#running ? this.pause() : this.start();
+      this.#running ? this.#pause() : this.#start();
       if (this.#running) {
         const badgeText = this.#isWorkSession ? "Work" : "Break";
         const badgeState = this.#isWorkSession ? "work" : "break";
@@ -140,7 +156,34 @@ class Timer {
     this.#alarmAudio.addEventListener("ended", () => {
       this.#switchSession();
     });
-    this.#resetBtnEl.addEventListener("click", () => this.reset());
+    this.#resetBtnEl.addEventListener("click", () => this.#reset());
+    this.#editBtnEl.addEventListener("click", () => {
+      this.#modalEl.classList.add("active");
+    });
+    // TODO: figure out reusable method for below
+    this.#modalOverlayEl.addEventListener("click", () => {
+      this.#modalEl.classList.remove("active");
+    });
+    this.#modalCancelBtnEl.addEventListener("click", () => {
+      this.#modalEl.classList.remove("active");
+    });
+    //! not part of comment mentioned above
+    this.#modalSaveBtnEl.addEventListener("click", () => {
+      const workMinutes = Number(this.#modalWorkInputEl.value);
+      const breakMinutes = Number(this.#modalBreakInputEl.value);
+
+      if (typeof workMinutes === "number" && typeof breakMinutes === "number") {
+        this.#setSessionLength(workMinutes, breakMinutes);
+      } else {
+        console.error("Error settings session lengths!");
+      }
+    });
+  }
+  #setSessionLength(workLength, breakLength) {
+    this.#workLength = workLength;
+    this.#breakLength = breakLength;
+    this.#modalEl.classList.remove("active");
+    this.#reset();
   }
 }
 

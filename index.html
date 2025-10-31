@@ -13,7 +13,7 @@
       <p class="timer" id="timer"></p>
 
       <div class="app-buttons">
-        <button class="button button--small" disabled>
+        <button class="button button--small" id="edit-button">
           <ion-icon name="pencil" class="button-icon"></ion-icon>
         </button>
         <button class="button" id="play-pause-button">
@@ -28,6 +28,47 @@
         </button>
       </div>
     </main>
+
+    <div class="modal" id="settings-modal">
+      <div class="modal-overlay" id="settings-overlay"></div>
+      <div class="modal-content">
+        <h2 class="modal-title">Session Settings</h2>
+
+        <p class="modal-disclaimer">Durations are measured in minutes.</p>
+
+        <div class="modal-field">
+          <label for="work-length">Work Session Duration</label>
+          <input
+            type="number"
+            name="work-length"
+            id="work-length"
+            min="1"
+            max="120"
+            value="25"
+          />
+        </div>
+        <div class="modal-field">
+          <label for="break-length">Break Session Duration</label>
+          <input
+            type="number"
+            name="break-length"
+            id="break-length"
+            min="1"
+            max="60"
+            value="5"
+          />
+        </div>
+
+        <div class="modal-actions">
+          <button class="button button--rectangular" id="cancel-settings">
+            Cancel
+          </button>
+          <button class="button button--rectangular" id="save-settings">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script
       type="module"
