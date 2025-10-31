@@ -8,6 +8,7 @@ class Timer {
   #sessionInterval;
   #running;
   #isWorkSession;
+  #localStorageKey = "t25-duration-settings";
   // private dom elements
   #timerEl;
   #playPauseBtnEl;
@@ -43,6 +44,7 @@ class Timer {
     modalWorkInputSelector = "#work-length",
     modalBreakInputSelector = "#break-length",
   } = {}) {
+    const storedData = this.#loadSessionSettings();
     // state
     this.#workLength = workSessionLength;
     this.#breakLength = breakSessionLength;
@@ -182,8 +184,29 @@ class Timer {
   #setSessionLength(workLength, breakLength) {
     this.#workLength = workLength;
     this.#breakLength = breakLength;
+    this.#saveSessionSettings();
     this.#modalEl.classList.remove("active");
     this.#reset();
+  }
+  #loadSessionSettings() {
+    try {
+      const json = localStorage.getItem(this.#localStorageKey);
+      return json ? JSON.parse(json) : null;
+    } catch (error) {
+      console.error("Failed to load session settings:", err);
+      return null;
+    }
+  }
+  #saveSessionSettings() {
+    try {
+      const data = {
+        work: this.#workLength,
+        break: this.#breakLength,
+      };
+      localStorage.setItem(this.#localStorageKey, JSON.stringify(data));
+    } catch (error) {
+      console.error("Failed to save session settings:", err);
+    }
   }
 }
 
